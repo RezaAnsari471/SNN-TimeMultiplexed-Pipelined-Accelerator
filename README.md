@@ -1,54 +1,48 @@
 # A Time-Multiplexed Spiking Neural Network Accelerator with Pipelined Readout for FPGA Inference
 This repository contains the official Python reference models and hardware VHDL implementations for the paper "A Time-Multiplexed Spiking Neural Network Accelerator with Pipelined Readout for FPGA Inference".
 
-# Paper Summary
+## Paper Summary
 This work presents a hardware-optimized Spiking Neural Network (SNN) accelerator tailored for resource-constrained FPGA devices. Using a 784-64-10 topology mapped on an entry-level AMD Artix-7 (XC7A200T) FPGA, we transition from a baseline unoptimized design (Version 1) to a multi-cycle pipelined argmax and tie-breaker readout architecture (Version 2). This optimization eliminates the dominant combinational critical path, increasing the maximum operating frequency (F_max) from 13.3 MHz to 167 MHz while preserving inference accuracy.
 
-# Workflow Step-by-Step
-## 1. Software Workflow (Python)
-
-The software workflow consists of training a baseline Artificial Neural Network (ANN), quantizing its weights, generating spike-encoded inputs, and running Spiking Neural Network (SNN) inference.
-
 ### Step 1: ANN Training
-Run "ANN_Training.py" to generate the baseline floating-point weights. 
+Run `ANN_Training.py` to generate the baseline floating-point weights. 
 * This script automatically downloads the 60,000 MNIST training samples and 10,000 test samples.
-* The generated pre-quantized weights used to achieve the results in the paper are provided in this repository as "Ann_weights_64n_97.7acc_10epoch_adam.pth".
+* The generated pre-trained weights used to achieve the results in the paper are provided in this repository as `Ann_weights_64n_97.7acc_10epoch_adam.pth`.
 
 ### Step 2: Weight Quantization & Spike Encoding
-Run "ANN_to_SNN.py" to prepare the data for the SNN environment.
+Run `ANN_to_SNN.py` to prepare the data for the SNN environment.
 * This script reads the weights from the hard drive, quantizes them to 8-bit integers, and converts the 28x28 MNIST images into spike trains.
-* The outputs are stored as ".npy" files for Python SNN inference and ".mem" files for VHDL SNN models.
-* Adjustable Parameters: You can modify parameters such as "num_test_samples", "T" (number of time-steps), and "np.random.seed(42)" inside the script.
+* The outputs are stored as `.npy` files for Python SNN inference and `.mem` files for VHDL SNN models.
+* **Adjustable Parameters:** You can modify parameters such as `num_test_samples = 1000`, `T = 16`, and `np.random.seed(42)` inside the script.
 
 ### Step 3: SNN Inference Models
 Three different SNN inference scripts are provided to measure runtime, accuracy, and power:
-1. SNN_inference_Unoptimized.py: The initial SNN model written with standard nested loops.
-2. SNN_inference_Vectorized.py: Vectorizes all iterative parts using NumPy instructions, leaving only the sample feeding scheme inside a loop for 1000 samples.
-3. SNN_inference_Vectorized_Batch.py: Fully vectorized implementation utilizing NumPy to process all 1000 samples in a single batch.
-* Adjustable Parameters: Inside these scripts, you can alter "num_repeats" (set to 10 or higher for accurate runtime/power measurements; stick with 1 for accuracy measurements), "theta" (Threshold for spiking), and "leak_shift" (Shift for leaky integration).
+* **`SNN_inference_Unoptimized.py`**: The initial SNN model written with standard nested loops.
+* **`SNN_inference_Vectorized.py`**: Vectorizes all iterative parts, leaving only the sample feeding scheme inside a loop for 1000 samples.
+* **`SNN_inference_Vectorized_Batch.py`**: Fully vectorized implementation utilizing NumPy to process all 1000 samples in a single batch.
+* **Adjustable Parameters:** Inside these scripts, you can alter `num_repeats = 1` (set to 10 or higher for accurate runtime/power measurements; stick with 1 for accuracy measurements), `theta = 448` (Threshold for spiking), and `leak_shift = 3` (Shift for leaky integration).
 
----------------------------------------
+---
 
 ## 2. Hardware Implementation (VHDL)
-The hardware implementation is targeted for the Vivado Design Suite version 2023.2. The repository contains two versions of the architecture (Version 1 and Version 2) located in their respective folders under "VHDL/".
+The hardware implementation is targeted for the Vivado Design Suite version 2023.2. The repository contains two versions of the architecture (Version 1 and Version 2) located in their respective folders under `VHDL/`.
 
 ### Setting up the Vivado Project
 To replicate the hardware simulation, synthesis, and implementation, follow these steps for either Version 1 or Version 2:
 
-1. Open Vivado 2023.2 and select "Create Project".
-2. Choose Artix-7 AC701 Evaluation Board (or search for part xc7a200tfbg676-2).
-3. Choose "RTL Project" and proceed to the source addition screens.
-4. Add Design Sources: Add the top-level file and all submodules:
-   * snn_top_level.vhd (Top-Level module)
-   * layer_controller.vhd
-   * input_spike_driver.vhd
-   * synapse_accumulator.vhd
-   * lif_neuron.vhd
-   * output_counter.vhd 
-   * argmax_unit.vhd
-5. Add Simulation Sources: Add the testbench file: "snn_tb.vhd".
-6. Add Constraints: Add the constraints file: "ac701_snn_constraints.xdc".
-7. Update Memory Paths: Open "snn_top_level.vhd" and "snn_tb.vhd" in the Vivado text editor. Locate the "generic" parameters defining the file paths for the labels, weights and spikes (e.g., HIDDEN_WEIGHTS_FILE_PATH). Update these absolute paths to point to the ".mem" files generated by the "ANN_to_SNN.py" script on your local machine.
+1. Open Vivado 2023.2 and select **Create Project**.
+2. Choose **RTL Project** and proceed to the source addition screens.
+3. **Add Design Sources:** Add the top-level file and all submodules:
+   * `snn_top_level.vhd` (Top-Level module)
+   * `layer_controller.vhd`
+   * `input_spike_driver.vhd`
+   * `synapse_accumulator.vhd`
+   * `lif_neuron.vhd`
+   * `output_counter.vhd`
+   * `argmax_unit.vhd`
+4. **Add Simulation Sources:** Add the testbench file: `snn_tb.vhd`.
+5. **Add Constraints:** Add the constraints file: `ac701_snn_constraints.xdc`.
+6. **Update Memory Paths:** Open `snn_top_level.vhd` and `snn_tb.vhd` in the Vivado text editor. Locate the `generic` parameters defining the file paths for the weights and spikes (e.g., `HIDDEN_WEIGHTS_FILE_PATH`). Update these absolute paths to point to the `.mem` files generated by the `ANN_to_SNN.py` script on your local machine.
 
 ### Verification and Power Analysis
 Running Behavioral Simulation
@@ -60,13 +54,14 @@ Running Behavioral Simulation
 3. View the console output. Vivado will report the final SNN classification accuracy (e.g., 95.67% reported as 9567).
 
 ### Generating Switching Activity (.saif) for Power Measurement
-To estimate post-implementation switching power consumption, generate a Switching Activity Interchange Format (.saif) file during simulation.
+To estimate post-implementation switching power consumption, generate a Switching Activity Interchange Format (`.saif`) file during simulation.
 
 1. Before running the behavioral simulation in Vivado, execute the following commands in the TCL Console to record switching activity:
-open_saif behavioral_activity.saif
-log_saif [get_objects -r /snn_tb/snn_top_level_inst/*]
-run all
-close_saif
+    ```tcl
+      open_saif behavioral_activity.saif
+      log_saif [get_objects -r /snn_tb/snn_top_level_inst/*]
+      run all
+      close_saif
 2. Once simulation is complete, run Synthesis and Implementation.
 3. Open the Implemented Design, click Report Power, and load the newly generated behavioral_activity.saif under the power settings to compute realistic switching activity and power estimation.
 
