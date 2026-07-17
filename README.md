@@ -49,7 +49,7 @@ To replicate the hardware simulation, synthesis, and implementation, follow thes
 ### Verification and Power Analysis
 Running Behavioral Simulation
 
-1. Click Run Simulation --> Run Behavioral Simulation.
+1. Click **Run Simulation** --> Run Behavioral Simulation.
 2. Run the simulation in full. The testbench terminates automatically when all 1,000 samples are processed.
    * Version 1 Simulation clock period: 75 ns (13.3 MHz)
    * Version 2 Simulation clock period: 6 ns (167 MHz)
