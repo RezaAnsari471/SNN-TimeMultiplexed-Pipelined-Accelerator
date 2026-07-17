@@ -33,7 +33,7 @@ The hardware implementation is targeted for the Vivado Design Suite version 2023
 ### Setting up the Vivado Project
 To replicate the hardware simulation, synthesis, and implementation, follow these steps for either Version 1 or Version 2:
 
-1. **Create a New Project:** Open **Vivado 2023.2** and create an RTL Project targeting the `Artix-7 AC701 Evaluation Board (or part xc7a200tfbg676-2)`.
+1. **Create a New Project:** Open **Vivado 2023.2** and create an RTL Project targeting the `Artix-7 AC701 Evaluation Board (xc7a200tfbg676-2)`.
 2. **Add Design Sources:** Add the top-level file and all submodules:
    * `snn_top_level.vhd` (Top-Level module)
    * `layer_controller.vhd`
