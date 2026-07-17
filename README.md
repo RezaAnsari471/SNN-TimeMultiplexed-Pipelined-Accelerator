@@ -4,6 +4,9 @@ This repository contains the official Python reference models and hardware VHDL 
 ## Paper Summary
 This work presents a hardware-optimized Spiking Neural Network (SNN) accelerator tailored for resource-constrained FPGA devices. Using a 784-64-10 topology mapped on an entry-level AMD Artix-7 (XC7A200T) FPGA, we transition from a baseline unoptimized design (Version 1) to a multi-cycle pipelined argmax and tie-breaker readout architecture (Version 2). This optimization eliminates the dominant combinational critical path, increasing the maximum operating frequency (F_max) from 13.3 MHz to 167 MHz while preserving inference accuracy.
 
+## 1. Software Workflow (Python)
+The software workflow consists of training a baseline Artificial Neural Network (ANN), quantizing its weights, generating spike-encoded inputs, and running Spiking Neural Network (SNN) inference.
+
 ### Step 1: ANN Training
 Run `ANN_Training.py` to generate the baseline floating-point weights. 
 * This script automatically downloads the 60,000 MNIST training samples and 10,000 test samples.
