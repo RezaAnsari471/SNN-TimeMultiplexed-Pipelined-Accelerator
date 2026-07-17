@@ -59,6 +59,7 @@ Running Behavioral Simulation.
 To estimate post-implementation switching power consumption, generate a Switching Activity Interchange Format (`.saif`) file during simulation.
 
 1. Before running the behavioral simulation in Vivado, execute the following commands in the TCL Console to record switching activity:
+
    ```tcl
    open_saif behavioral_activity.saif
    log_saif [get_objects -r /snn_tb/snn_top_level_inst/*]
