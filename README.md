@@ -16,7 +16,7 @@ Run `ANN_Training.py` to generate the baseline floating-point weights.
 Run `ANN_to_SNN.py` to prepare the data for the SNN environment.
 * This script reads the weights from the hard drive, quantizes them to 8-bit integers, and converts the 28x28 MNIST images into spike trains.
 * The outputs are stored as `.npy` files for Python SNN inference and `.mem` files for VHDL SNN models.
-* **Adjustable Parameters:** You can modify parameters such as `num_test_samples`, `T`(number of time-steps) inside the script. You can change the random seed by editing and `np.random.seed(42)` line.
+* **Adjustable Parameters:** You can modify parameters such as `num_test_samples`, `T`(number of time-steps) and change the random seed as well by editing `np.random.seed(42)` line inside the script.
 
 ### Step 3: SNN Inference Models
 Three different SNN inference scripts are provided to measure runtime, accuracy, and power:
