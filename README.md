@@ -16,14 +16,14 @@ Run `ANN_Training.py` to generate the baseline floating-point weights.
 Run `ANN_to_SNN.py` to prepare the data for the SNN environment.
 * This script reads the weights from the hard drive, quantizes them to 8-bit integers, and converts the 28x28 MNIST images into spike trains.
 * The outputs are stored as `.npy` files for Python SNN inference and `.mem` files for VHDL SNN models.
-* **Adjustable Parameters:** You can modify parameters such as `num_test_samples = 1000`, `T = 16`, and `np.random.seed(42)` inside the script.
+* **Adjustable Parameters:** You can modify parameters such as `num_test_samples`, `T`(number of time-steps) inside the script. You can change the random seed by editing and `np.random.seed(42)` line.
 
 ### Step 3: SNN Inference Models
 Three different SNN inference scripts are provided to measure runtime, accuracy, and power:
 * **`SNN_inference_Unoptimized.py`**: The initial SNN model written with standard nested loops.
 * **`SNN_inference_Vectorized.py`**: Vectorizes all iterative parts, leaving only the sample feeding scheme inside a loop for 1000 samples.
 * **`SNN_inference_Vectorized_Batch.py`**: Fully vectorized implementation utilizing NumPy to process all 1000 samples in a single batch.
-* **Adjustable Parameters:** Inside these scripts, you can alter `num_repeats = 1` (set to 10 or higher for accurate runtime/power measurements; stick with 1 for accuracy measurements), `theta = 448` (Threshold for spiking), and `leak_shift = 3` (Shift for leaky integration).
+* **Adjustable Parameters:** Inside these scripts, you can alter `num_repeats` (set to 10 or higher for accurate runtime/power measurements; stick with 1 for accuracy measurements), `theta` (Threshold for spiking), and `leak_shift` (Shift for leaky integration).
 
 ---
 
